@@ -1,1 +1,1 @@
-# MERN VKART
+# VKART
