@@ -66,7 +66,7 @@ const data = {
       brand: 'Puma',
       rating: 4.5,
       numReviews: 10,
-      description: 'high quality product',
+      description: 'high quality products',
     },
   ],
 };
