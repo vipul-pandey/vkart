@@ -9,9 +9,6 @@
   ],
   "scripts": {
     "install:all": "npm install && npm install --workspace=frontend && npm install --workspace=backend",
-    "start": "node backend/server.js",
-    "server": "nodemon backend/server.js",
-    "dev": "nodemon backend/server.js",
     "dev:frontend": "npm run start --workspace=frontend",
     "dev:backend": "npm run start --workspace=backend",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
