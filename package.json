@@ -1,0 +1,35 @@
+{
+  "name": "vkart2",
+  "version": "1.0.0",
+  "description": "VKART - Full Stack E-commerce Application",
+  "main": "index.js",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm install --workspace=frontend && npm install --workspace=backend",
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "dev:frontend": "npm run start --workspace=frontend",
+    "dev:backend": "npm run start --workspace=backend",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "npm run build --workspace=frontend",
+    "start": "npm run start --workspace=backend",
+    "test": "npm run test --workspace=frontend && npm run test --workspace=backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vipul-pandey/vkart"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vipul-pandey/vkart/issues"
+  },
+  "homepage": "https://github.com/vipul-pandey/vkart#readme",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
