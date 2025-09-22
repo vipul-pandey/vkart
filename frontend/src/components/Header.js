@@ -78,7 +78,7 @@ const Header = () => {
   };
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" sx={{ bgcolor: 'white', color: 'black' }}>
+      <AppBar position="fixed">
         <Container maxWidth="xl">
           <Toolbar>
             <IconButton

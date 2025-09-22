@@ -1,5 +1,5 @@
-import axios from "../api/axiosInstance";
 import { useContext, useEffect, useState } from 'react';
+import axios from "../api/axiosInstance";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
@@ -65,6 +65,7 @@ export default function SigninScreen() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             margin="normal"
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             fullWidth
@@ -74,6 +75,7 @@ export default function SigninScreen() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             margin="normal"
+            InputLabelProps={{ shrink: true }}
           />
           <Button
             type="submit"

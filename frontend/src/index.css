@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -74,25 +74,4 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-/* Custom Material-UI overrides */
-.MuiButton-containedPrimary {
-  background-color: #f0c040 !important;
-  color: #000000 !important;
-}
-
-.MuiButton-containedPrimary:hover {
-  background-color: #d4a935 !important;
-}
-
-/* Link styles */
-a {
-  color: #f0c040;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #d4a935;
-  text-decoration: underline;
 }

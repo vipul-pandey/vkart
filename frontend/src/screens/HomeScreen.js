@@ -59,7 +59,7 @@ const HomeScreen = () => {
       <Helmet>
         <title>Vipulzone</title>
       </Helmet>
-      
+
       <Box sx={{ mb: 4 }}>
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
@@ -140,9 +140,9 @@ const HomeScreen = () => {
         </Swiper>
       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', my: 5 }}>
-        <Typography variant="h3" component="h1">
-          __NEW ARRIVAL__
+      <Box sx={{ display: 'flex', backgroundColor: "primary.bgColor", justifyContent: 'center', my: 5, py: 3 }}>
+        <Typography variant="h4" component="h2" fontWeight={'bold'}>
+          New Arrivals
         </Typography>
       </Box>
 

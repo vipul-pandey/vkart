@@ -2,31 +2,24 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Container, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import AdminRoute from './components/AdminRoute';
 import routes from './routes';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#f0c040',
-    },
-  },
-});
+import theme from './theme';
 
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <>
+        <Box display={'flex'} flexDirection={'column'} minHeight={'100vh'}>
           <ToastContainer position="bottom-center" limit={1} />
           <Header />
-          <main>
+          <Box style={{ flex: 1 }}>
             <Container maxWidth="xl" sx={{ mt: 10 }}>
               <Routes>
                 {routes?.map((route) => {
@@ -57,9 +50,9 @@ const App = () => {
                 })}
               </Routes>
             </Container>
-          </main>
+          </Box>
           <Footer />
-        </>
+        </Box>
       </BrowserRouter>
     </ThemeProvider>
   );
