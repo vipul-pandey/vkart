@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   LoadScript,

@@ -1,5 +1,5 @@
-import Axios from 'axios';
 import React, { useContext, useEffect, useReducer } from 'react';
+import axios from '../api/axiosInstance';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -12,7 +12,6 @@ import {
   ListItem,
   Typography,
   Box,
-  Divider,
 } from '@mui/material';
 
 import { getError } from '../utils';
@@ -55,7 +54,7 @@ const PlaceOrderScreen = () => {
     try {
       dispatch({ type: 'CREATE_REQUEST' });
 
-      const { data } = await Axios.post(
+      const { data } = await axios.post(
         '/api/orders',
         {
           orderItems: cart.cartItems,

@@ -1,5 +1,5 @@
-import axios from 'axios';
 import React, { useContext, useEffect, useReducer } from 'react';
+import axios from '../api/axiosInstance';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams, Link } from 'react-router-dom';

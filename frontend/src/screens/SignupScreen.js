@@ -1,5 +1,5 @@
-import Axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
+import axios from '../api/axiosInstance';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
@@ -35,7 +35,7 @@ export default function SignupScreen() {
       return;
     }
     try {
-      const { data } = await Axios.post('/api/users/signup', {
+      const { data } = await axios.post('/api/users/signup', {
         name,
         email,
         password,

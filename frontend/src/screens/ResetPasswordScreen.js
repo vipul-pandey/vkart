@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import axios from '../api/axiosInstance';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -38,7 +38,7 @@ export default function ResetPasswordScreen() {
       return;
     }
     try {
-      await Axios.post('/api/users/reset-password', {
+      await axios.post('/api/users/reset-password', {
         password,
         token,
       });

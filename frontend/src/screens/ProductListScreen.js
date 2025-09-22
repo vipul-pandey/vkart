@@ -1,5 +1,5 @@
-import axios from 'axios';
 import React, { useContext, useEffect, useReducer } from 'react';
+import axios from '../api/axiosInstance';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Grid, Button, Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';

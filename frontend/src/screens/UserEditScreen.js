@@ -1,5 +1,5 @@
-import axios from 'axios';
 import React, { useContext, useEffect, useReducer, useState } from 'react';
+import axios from '../api/axiosInstance';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';

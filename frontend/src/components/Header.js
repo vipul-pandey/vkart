@@ -1,5 +1,5 @@
-import axios from 'axios';
 import React, { useState, useContext, useEffect } from 'react';
+import axios from '../api/axiosInstance';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
@@ -42,6 +42,7 @@ const Header = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        console.log('fetching categories', axios);
         const { data } = await axios.get(`/api/products/categories`);
         setCategories(data);
       } catch (err) {

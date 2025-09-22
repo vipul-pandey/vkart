@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { Helmet } from 'react-helmet-async';
 import {
   Grid,

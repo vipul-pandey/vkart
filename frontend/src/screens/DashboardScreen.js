@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 import Chart from 'react-google-charts';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { Grid, Card, CardContent, Typography, Box, Container } from '@mui/material';
 
 import { Store } from '../Store';
