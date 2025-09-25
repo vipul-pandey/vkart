@@ -24,7 +24,7 @@ import {
   AccountCircle,
 } from '@mui/icons-material';
 
-import logo from '../assets/logo.png';
+import logo from '../assets/vkart-logo.png';
 import SearchBox from './SearchBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
@@ -74,39 +74,91 @@ const Header = () => {
 
   const handleAdminMenuClose = () => {
     setAdminAnchorEl(null);
+    setAnchorEl(null);
   };
+  const [searchOpen, setSearchOpen] = useState(false);
   return (
     <Box sx={{ flexGrow: 1 }}>
+      {searchOpen && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: { xs: 56, sm: 64 },
+            left: 0,
+            width: '100vw',
+            height: `calc(100vh - 56px)`,
+            // For sm and up, adjust height for taller AppBar
+            '@media (min-width:600px)': {
+              height: 'calc(100vh - 64px)',
+            },
+            zIndex: 2000,
+            display: { xs: 'flex', md: 'none' },
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            pointerEvents: 'auto',
+            background: 'transparent',
+          }}
+          onClick={() => setSearchOpen(false)}
+        >
+          <Box
+            sx={{
+              width: '94%',
+              maxWidth: 500,
+              bgcolor: 'background.paper',
+              borderRadius: 2,
+              boxShadow: 3,
+              mt: 2,
+              p: 1.5,
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <SearchBox />
+          </Box>
+        </Box>
+      )}
       <AppBar position="fixed">
         <Container maxWidth="xl">
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
-
-            <Box
-              component={Link}
-              to="/"
-              sx={{ display: 'flex', alignItems: 'center', mr: 2 }}
-            >
-              <img src={logo} width="130px" alt="logo" />
+          <Toolbar sx={{ minHeight: { xs: 56, sm: 64, padding: 0 } }}>
+            {/* Left: Hamburger and Logo */}
+            <Box sx={{ display: 'flex', alignItems: 'center', flexzz: { xs: '1 1 auto', md: '0 1 auto' } }}>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
+                sx={{ mr: { xs: 0, md: 2 } }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Box
+                component={Link}
+                to="/"
+                sx={{ display: 'flex', alignItems: 'center' }}
+                onClick={() => setSearchOpen(false)}
+              >
+                <img src={logo} width='100px' alt="logo" />
+              </Box>
             </Box>
 
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-              <SearchBox />
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'end' }}>
+              <IconButton
+                color="inherit"
+                sx={{ display: { xs: 'flex', md: 'none' } }}
+                onClick={() => setSearchOpen(true)}
+                aria-label="open search"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99a1 1 0 0 0 1.41-1.41l-4.99-5zm-6 0C8.01 14 6 11.99 6 9.5S8.01 5 10.5 5 15 7.01 15 9.5 12.99 14 10.5 14z" fill="currentColor" /></svg>
+              </IconButton>
+              <Box sx={{ display: { xs: 'none', md: 'flex' }, width: '100%', maxWidth: 400 }}>
+                <SearchBox />
+              </Box>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flex: { xs: '1 1 auto', md: '0 1 auto' } }}>
               <IconButton
                 component={Link}
                 to="/cart"
                 color="inherit"
-                sx={{ mr: 2 }}
+                sx={{ mr: 1 }}
               >
                 <Badge
                   badgeContent={cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
@@ -122,8 +174,16 @@ const Header = () => {
                     color="inherit"
                     onClick={handleUserMenuOpen}
                     startIcon={<AccountCircle />}
+                    sx={{ minWidth: 0, px: 1 }}
                   >
-                    {userInfo.name}
+                    <Box
+                      sx={{
+                        display: { xs: 'none', sm: 'inline' },
+                        textTransform: 'none',
+                      }}
+                    >
+                      {userInfo.name}
+                    </Box>
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -144,6 +204,14 @@ const Header = () => {
                     >
                       History
                     </MenuItem>
+                    {userInfo.isAdmin && (
+                      <MenuItem
+                        component={Link}
+                        onClick={handleAdminMenuOpen}
+                      >
+                        Admin
+                      </MenuItem>
+                    )}
                     <MenuItem onClick={signoutHandler}>Sign Out</MenuItem>
                   </Menu>
                 </>
@@ -152,48 +220,41 @@ const Header = () => {
                   Sign In
                 </Button>
               )}
-
-              {userInfo && userInfo.isAdmin && (
-                <>
-                  <Button color="inherit" onClick={handleAdminMenuOpen}>
-                    Admin
-                  </Button>
-                  <Menu
-                    anchorEl={adminAnchorEl}
-                    open={Boolean(adminAnchorEl)}
-                    onClose={handleAdminMenuClose}
-                  >
-                    <MenuItem
-                      component={Link}
-                      to="/admin/dashboard"
-                      onClick={handleAdminMenuClose}
-                    >
-                      Dashboard
-                    </MenuItem>
-                    <MenuItem
-                      component={Link}
-                      to="/admin/products"
-                      onClick={handleAdminMenuClose}
-                    >
-                      Products
-                    </MenuItem>
-                    <MenuItem
-                      component={Link}
-                      to="/admin/orders"
-                      onClick={handleAdminMenuClose}
-                    >
-                      Orders
-                    </MenuItem>
-                    <MenuItem
-                      component={Link}
-                      to="/admin/users"
-                      onClick={handleAdminMenuClose}
-                    >
-                      Users
-                    </MenuItem>
-                  </Menu>
-                </>
-              )}
+              <Menu
+                anchorEl={adminAnchorEl}
+                open={Boolean(adminAnchorEl)}
+                onClose={handleAdminMenuClose}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              >
+                <MenuItem
+                  component={Link}
+                  to="/admin/dashboard"
+                  onClick={handleAdminMenuClose}
+                >
+                  Dashboard
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/admin/products"
+                  onClick={handleAdminMenuClose}
+                >
+                  Products
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/admin/orders"
+                  onClick={handleAdminMenuClose}
+                >
+                  Orders
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/admin/users"
+                  onClick={handleAdminMenuClose}
+                >
+                  Users
+                </MenuItem>
+              </Menu>
             </Box>
           </Toolbar>
         </Container>
