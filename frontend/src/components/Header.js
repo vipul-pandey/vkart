@@ -42,7 +42,6 @@ const Header = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        console.log('fetching categories', axios);
         const { data } = await axios.get(`/api/products/categories`);
         setCategories(data);
       } catch (err) {

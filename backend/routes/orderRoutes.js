@@ -42,7 +42,6 @@ orderRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    console.log('getting summary');
     const orders = await Order.aggregate([
       {
         $group: {

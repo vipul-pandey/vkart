@@ -93,7 +93,7 @@ const DashboardScreen = () => {
               <Card>
                 <CardContent>
                   <Typography variant="h4" component="div">
-                    $
+                    ₹
                     {summary.orders && summary.users[0]
                       ? summary.orders[0].totalSales.toFixed(2)
                       : 0}

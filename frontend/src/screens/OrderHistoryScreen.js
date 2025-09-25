@@ -1,20 +1,15 @@
-import React, { useContext, useEffect, useReducer } from 'react';
-import axios from '../api/axiosInstance';
+import { useContext, useEffect, useReducer } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import {
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Paper,
   Typography,
-  Container,
+  Box,
 } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 
+import axios from '../api/axiosInstance';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
@@ -61,60 +56,79 @@ const OrderHistoryScreen = () => {
     };
     fetchData();
   }, [userInfo]);
+
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 250 },
+    { field: 'date', headerName: 'Date', width: 250 },
+    { field: 'total', headerName: 'Total', width: 150 },
+    { field: 'paid', headerName: 'Paid', width: 150 },
+    { field: 'delivered', headerName: 'Delivered', width: 100 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 250,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => navigate(`/order/${params.row.id}`)}
+            sx={{ mr: 1 }}
+          >
+            Details
+          </Button>
+        </>
+      ),
+    },
+  ];
+  const rows = orders?.map(order => ({
+    id: order._id,
+    date: order.createdAt.substring(0, 10),
+    total: order.totalPrice.toFixed(2),
+    paid: order.isPaid ? order.paidAt.substring(0, 10) : 'No',
+    delivered: order.isDelivered
+      ? order.deliveredAt.substring(0, 10)
+      : 'No',
+  })) || [];
+
   return (
-    <Container>
+    <Box height="80vh" width="100%" display="flex" flexDirection="column">
       <Helmet>
         <title>Order History</title>
       </Helmet>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Order History
-      </Typography>
+      <Box
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 100,
+          backgroundColor: 'primary.bgColor',
+          borderBottom: 1,
+          borderColor: 'divider',
+          py: 2,
+          px: 2,
+        }}
+      >
+        <Typography variant="h4" component="h1">
+          Orders
+        </Typography>
+      </Box>
       {loading ? (
         <LoadingBox />
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>DATE</TableCell>
-                <TableCell>TOTAL</TableCell>
-                <TableCell>PAID</TableCell>
-                <TableCell>DELIVERED</TableCell>
-                <TableCell>ACTIONS</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {orders.map((order) => (
-                <TableRow key={order._id}>
-                  <TableCell>{order._id}</TableCell>
-                  <TableCell>{order.createdAt.substring(0, 10)}</TableCell>
-                  <TableCell>${order.totalPrice.toFixed(2)}</TableCell>
-                  <TableCell>
-                    {order.isPaid ? order.paidAt.substring(0, 10) : 'No'}
-                  </TableCell>
-                  <TableCell>
-                    {order.isDelivered
-                      ? order.deliveredAt.substring(0, 10)
-                      : 'No'}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outlined"
-                      onClick={() => navigate(`/order/${order._id}`)}
-                    >
-                      Details
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Paper sx={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            hideFooter
+            loading={loading}
+            sx={{ border: 0 }}
+          />
+        </Paper>
       )}
-    </Container>
+    </Box>
   );
 };
 export default OrderHistoryScreen;

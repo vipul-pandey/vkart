@@ -1,5 +1,4 @@
 import React, { useContext, useReducer, useState } from 'react';
-import axios from '../api/axiosInstance';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
 import {
@@ -11,6 +10,7 @@ import {
   Paper,
 } from '@mui/material';
 
+import axios from '../api/axiosInstance';
 import { Store } from '../Store';
 import { getError } from '../utils';
 
@@ -85,6 +85,7 @@ export default function ProfileScreen() {
             onChange={(e) => setName(e.target.value)}
             required
             margin="normal"
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             fullWidth
@@ -94,6 +95,7 @@ export default function ProfileScreen() {
             onChange={(e) => setEmail(e.target.value)}
             required
             margin="normal"
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             fullWidth
@@ -102,6 +104,7 @@ export default function ProfileScreen() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             margin="normal"
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             fullWidth
@@ -110,6 +113,7 @@ export default function ProfileScreen() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             margin="normal"
+            InputLabelProps={{ shrink: true }}
           />
           <Button
             type="submit"

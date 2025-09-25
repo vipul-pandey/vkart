@@ -4,8 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import {
   Grid,
   Typography,
-  Box,
-  Paper,
+  Box
 } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
@@ -57,7 +56,7 @@ const HomeScreen = () => {
   return (
     <Box>
       <Helmet>
-        <title>Vipulzone</title>
+        <title>Vkart</title>
       </Helmet>
 
       <Box sx={{ mb: 4 }}>

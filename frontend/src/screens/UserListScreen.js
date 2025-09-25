@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useReducer } from 'react';
-import axios from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Container } from '@mui/material';
+import { Button, Box, Paper, Typography } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 
+import axios from '../api/axiosInstance';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
@@ -75,7 +76,7 @@ export default function UserListScreen() {
     if (window.confirm('Are you sure to delete?')) {
       try {
         dispatch({ type: 'DELETE_REQUEST' });
-        await axios.delete(`/api/users/${user._id}`, {
+        await axios.delete(`/api/users/${user.id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         toast.success('user deleted successfully');
@@ -88,12 +89,63 @@ export default function UserListScreen() {
       }
     }
   };
+
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 250 },
+    { field: 'name', headerName: 'Name', width: 250 },
+    { field: 'email', headerName: 'Email', width: 250 },
+    { field: 'isAdmin', headerName: 'IsAdmin', width: 150 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 250,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => navigate(`/admin/user/${params.row.id}`)}
+            sx={{ mr: 1 }}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            size="small"
+            onClick={() => deleteHandler(params.row)}
+          >
+            Delete
+          </Button>
+        </>
+      ),
+    },
+  ];
+  const rows = users?.map(user => ({
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin ? 'YES' : 'NO',
+  })) || [];
+
   return (
-    <div>
-      <Helmet>
-        <title>Users</title>
-      </Helmet>
-      <h1>Users</h1>
+    <Box height="80vh" width="100%" display="flex" flexDirection="column">
+      <Helmet> <title>Users</title></Helmet>
+      <Box sx={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        backgroundColor: 'primary.bgColor',
+        borderBottom: 1,
+        borderColor: 'divider',
+        py: 2,
+        px: 2,
+      }}>
+        <Typography variant="h4" component="h1">
+          Users
+        </Typography>
+      </Box>
 
       {loadingDelete && <LoadingBox></LoadingBox>}
       {loading ? (
@@ -101,45 +153,16 @@ export default function UserListScreen() {
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
-        <table className="table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>NAME</th>
-              <th>EMAIL</th>
-              <th>IS ADMIN</th>
-              <th>ACTIONS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user._id}>
-                <td>{user._id}</td>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.isAdmin ? 'YES' : 'NO'}</td>
-                <td>
-                  <Button
-                    type="button"
-                    variant="light"
-                    onClick={() => navigate(`/admin/user/${user._id}`)}
-                  >
-                    Edit
-                  </Button>
-                  &nbsp;
-                  <Button
-                    type="button"
-                    variant="light"
-                    onClick={() => deleteHandler(user)}
-                  >
-                    Delete
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <Paper sx={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            hideFooter
+            loading={loading}
+            sx={{ border: 0 }}
+          />
+        </Paper>
       )}
-    </div>
+    </Box>
   );
 }

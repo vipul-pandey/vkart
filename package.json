@@ -28,5 +28,8 @@
   "homepage": "https://github.com/vipul-pandey/vkart#readme",
   "devDependencies": {
     "concurrently": "^7.6.0"
+  },
+  "dependencies": {
+    "@mui/icons-material": "^7.3.2"
   }
 }
