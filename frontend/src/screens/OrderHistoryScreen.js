@@ -85,7 +85,7 @@ const OrderHistoryScreen = () => {
   const rows = orders?.map(order => ({
     id: order._id,
     date: order.createdAt.substring(0, 10),
-    total: order.totalPrice.toFixed(2),
+    total: '₹' + order.totalPrice.toFixed(2),
     paid: order.isPaid ? order.paidAt.substring(0, 10) : 'No',
     delivered: order.isDelivered
       ? order.deliveredAt.substring(0, 10)

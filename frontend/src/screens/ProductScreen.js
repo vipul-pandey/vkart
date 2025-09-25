@@ -67,6 +67,7 @@ const ProductScreen = () => {
       loading: true,
       error: '',
     });
+  console.log('pruducs', product);
   useEffect(() => {
     const fetchData = async () => {
       dispatch({ type: 'FETCH_REQUEST' });
@@ -162,7 +163,7 @@ const ProductScreen = () => {
               />
             </ListItem>
             <ListItem>
-              <Typography variant="h6">Price: ${product.price}</Typography>
+              <Typography variant="h6">Price: ₹{product.price}</Typography>
             </ListItem>
             <ListItem>
               <Grid container spacing={1}>
@@ -207,7 +208,7 @@ const ProductScreen = () => {
                       <Typography>Price:</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography>${product.price}</Typography>
+                      <Typography>₹{product.price}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -255,7 +256,7 @@ const ProductScreen = () => {
                 <Typography variant="h6">{review.name}</Typography>
                 <Rating rating={review.rating} caption=" " />
                 <Typography variant="body2" color="text.secondary">
-                  {review.createdAt.substring(0, 10)}
+                  {review?.createdAt?.substring(0, 10)}
                 </Typography>
                 <Typography variant="body1">{review.comment}</Typography>
               </Box>

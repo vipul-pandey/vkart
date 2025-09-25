@@ -59,7 +59,7 @@ const Product = (props) => {
         </Typography>
         <Rating rating={product.rating} numReviews={product.numReviews} />
         <Typography variant="h6" color="primary">
-          ${product.price}
+          ₹{product.price}
         </Typography>
       </CardContent>
       <CardActions sx={{ justifyContent: 'center' }}>

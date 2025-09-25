@@ -290,7 +290,7 @@ const OrderScreen = () => {
                         <Typography>{item.quantity}</Typography>
                       </Grid>
                       <Grid item xs={12} sm={3}>
-                        <Typography>${item.price}</Typography>
+                        <Typography>₹{item.price}</Typography>
                       </Grid>
                     </Grid>
                   </ListItem>
@@ -312,7 +312,7 @@ const OrderScreen = () => {
                       <Typography>Items</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography>${order.itemsPrice.toFixed(2)}</Typography>
+                      <Typography>₹{order.itemsPrice.toFixed(2)}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -322,7 +322,7 @@ const OrderScreen = () => {
                       <Typography>Shipping</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography>${order.shippingPrice.toFixed(2)}</Typography>
+                      <Typography>₹{order.shippingPrice.toFixed(2)}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -332,7 +332,7 @@ const OrderScreen = () => {
                       <Typography>Tax</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography>${order.taxPrice.toFixed(2)}</Typography>
+                      <Typography>₹{order.taxPrice.toFixed(2)}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -342,7 +342,7 @@ const OrderScreen = () => {
                       <Typography variant="h6">Order Total</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="h6">${order.totalPrice.toFixed(2)}</Typography>
+                      <Typography variant="h6">₹{order.totalPrice.toFixed(2)}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>

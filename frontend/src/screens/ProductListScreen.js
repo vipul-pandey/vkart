@@ -183,7 +183,7 @@ const ProductListScreen = () => {
   const rows = products?.map(product => ({
     id: product._id,
     name: product.name,
-    price: product.price,
+    price: '₹' + product.price,
     category: product.category,
     brand: product.brand,
     countInStock: product.countInStock,

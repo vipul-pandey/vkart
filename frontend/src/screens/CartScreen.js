@@ -109,7 +109,7 @@ const CartScreen = () => {
                       </Box>
                     </Grid>
                     <Grid item xs={12} sm={3}>
-                      <Typography variant="h6">${item.price}</Typography>
+                      <Typography variant="h6">₹{item.price}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={2}>
                       <IconButton
@@ -132,7 +132,7 @@ const CartScreen = () => {
                 Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)} items)
               </Typography>
               <Typography variant="h4" color="primary" gutterBottom>
-                ${cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
+                ₹{cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
               </Typography>
               <Divider sx={{ my: 2 }} />
               <Button
