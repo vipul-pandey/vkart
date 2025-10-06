@@ -77,9 +77,7 @@ const ProductListScreen = () => {
   });
 
   const navigate = useNavigate();
-  const [paginationModel, setPaginationModel] = React.useState({ page: 0, pageSize: 5 });
-
-  console.log('product image totalCount', totalCount, 'pages', pages, 'page', page);
+  const [paginationModel, setPaginationModel] = React.useState({ page: 0, pageSize: 10 });
 
   const { state } = useContext(Store);
   const { userInfo } = state;
@@ -131,7 +129,8 @@ const ProductListScreen = () => {
   const deleteHandler = async (product) => {
     if (window.confirm('Are you sure to delete?')) {
       try {
-        await axios.delete(`/api/products/${product._id}`, {
+        console.log('product to delete', product);
+        await axios.delete(`/api/products/${product.id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         toast.success('product deleted successfully');
