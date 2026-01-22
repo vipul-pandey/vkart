@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useCallback, useReducer } from 'react';
+import React, { useState, useContext, useEffect, useCallback, useReducer } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Box, Grid, Button, Typography, Paper } from '@mui/material';
+import { Box, Grid, Button, Typography, Paper, Avatar } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import axios from '../api/axiosInstance';
 
@@ -77,7 +77,7 @@ const ProductListScreen = () => {
   });
 
   const navigate = useNavigate();
-  const [paginationModel, setPaginationModel] = React.useState({ page: 0, pageSize: 10 });
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
 
   const { state } = useContext(Store);
   const { userInfo } = state;
@@ -147,6 +147,15 @@ const ProductListScreen = () => {
   const columns = [
     { field: 'id', headerName: 'ID', width: 250 },
     { field: 'name', headerName: 'Name', width: 250 },
+    {
+      field: 'image',
+      headerName: 'Image',
+      width: 120,
+      sortable: false,
+      renderCell: (params) => (
+        <Avatar src={params.value} variant="rounded" sx={{ width: 80, height: 48 }} />
+      ),
+    },
     { field: 'price', headerName: 'Price', width: 150 },
     { field: 'category', headerName: 'Category', width: 150 },
     { field: 'brand', headerName: 'Brand', width: 150 },
@@ -182,6 +191,7 @@ const ProductListScreen = () => {
   const rows = products?.map(product => ({
     id: product._id,
     name: product.name,
+    image: product.image,
     price: '₹' + product.price,
     category: product.category,
     brand: product.brand,

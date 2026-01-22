@@ -11,6 +11,8 @@ import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
+import BannerListScreen from './screens/BannerListScreen';
+import BannerEditScreen from './screens/BannerEditScreen';
 import MapScreen from './screens/MapScreen';
 import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
@@ -112,6 +114,16 @@ export default [
     path: '/admin/products',
     adminOnly: true,
     component: ProductListScreen,
+  },
+  {
+    path: '/admin/banners',
+    adminOnly: true,
+    component: BannerListScreen,
+  },
+  {
+    path: '/admin/banner/:id',
+    adminOnly: true,
+    component: BannerEditScreen,
   },
   {
     path: '/admin/product/:id',
