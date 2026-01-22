@@ -1,5 +1,4 @@
-import { useEffect, useReducer } from 'react';
-import axios from '../api/axiosInstance';
+import { useEffect, useReducer, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
   Grid,
@@ -12,9 +11,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-import Cal1 from '../assets/cal1.webp';
-import Cal2 from '../assets/cal2.webp';
-import Cal3 from '../assets/cal3.webp';
+import axios from '../api/axiosInstance';
 import Product from '../components/Product';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
@@ -38,6 +35,9 @@ const HomeScreen = () => {
     loading: true,
     error: '',
   });
+  const [banners, setBanners] = useState([]);
+  const [bannersLoading, setBannersLoading] = useState(true);
+  const [bannersError, setBannersError] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,10 +48,24 @@ const HomeScreen = () => {
       } catch (err) {
         dispatch({ type: 'FETCH_FAIL', payload: err.message });
       }
-
-      // setProducts(result.data);
     };
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        setBannersLoading(true);
+        setBannersError('');
+        const { data } = await axios.get('/api/banners');
+        setBanners(data.banners || []);
+        setBannersLoading(false);
+      } catch (err) {
+        setBannersError(err.message || 'Failed to load banners');
+        setBannersLoading(false);
+      }
+    };
+    fetchBanners();
   }, []);
   return (
     <Box>
@@ -60,87 +74,64 @@ const HomeScreen = () => {
       </Helmet>
 
       <Box sx={{ mb: 4 }}>
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          navigation
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 3000 }}
-          style={{ height: '30rem' }}
-        >
-          <SwiperSlide>
-            <Box sx={{ position: 'relative', height: '100%' }}>
-              <img
-                src={Cal1}
-                alt="First slide"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bottom: 20,
-                  left: 20,
-                  color: 'white',
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
-                }}
-              >
-                <Typography variant="h4">First slide label</Typography>
-                <Typography variant="body1">
-                  Nulla vitae elit libero, a pharetra augue mollis interdum.
-                </Typography>
-              </Box>
-            </Box>
-          </SwiperSlide>
-          <SwiperSlide>
-            <Box sx={{ position: 'relative', height: '100%' }}>
-              <img
-                src={Cal2}
-                alt="Second slide"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bottom: 20,
-                  left: 20,
-                  color: 'white',
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
-                }}
-              >
-                <Typography variant="h4">Second slide label</Typography>
-                <Typography variant="body1">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </Typography>
-              </Box>
-            </Box>
-          </SwiperSlide>
-          <SwiperSlide>
-            <Box sx={{ position: 'relative', height: '100%' }}>
-              <img
-                src={Cal3}
-                alt="Third slide"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bottom: 20,
-                  left: 20,
-                  color: 'white',
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
-                }}
-              >
-                <Typography variant="h4">Third slide label</Typography>
-                <Typography variant="body1">
-                  Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-                </Typography>
-              </Box>
-            </Box>
-          </SwiperSlide>
-        </Swiper>
+        {bannersLoading ? (
+          <LoadingBox />
+        ) : bannersError ? (
+          <MessageBox variant="danger">{bannersError}</MessageBox>
+        ) : banners.length === 0 ? (
+          <MessageBox variant="danger">No banners found</MessageBox>
+        ) : (
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            navigation
+            pagination={{ clickable: true }}
+            autoplay={{ delay: 3000 }}
+            slidesPerView="auto"
+            spaceBetween={20}
+            style={{ height: '30rem' }}
+          >
+            {banners.map((banner, index) => {
+              const imgSrc = banner.image || (banner.images && banner.images[0]);
+              return (
+                <SwiperSlide key={banner._id || index} style={{ width: '30rem' }}>
+                  <Box sx={{ position: 'relative', width: '30rem', height: '30rem' }}>
+                    <img
+                      src={imgSrc}
+                      alt={banner.title}
+                      style={{ width: '100%', height: '100%' }}
+                    />
+                    <Box borderRadius='0 15px' sx={{
+                      position: 'absolute',
+                      top: 10,
+                      left: 10,
+                      color: banner.label?.color || 'white',
+                      background:
+                        'linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7))',
+                      textShadow: '2px 2px 4px rgba(231, 9, 9, 0.5)',
+                    }}
+                      className="blink-animation">
+                      <Typography variant="h7" sx={{ p: 2, fontWeight: 'bold' }}>{banner.label?.text}</Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        bottom: 20,
+                        width: '100%',
+                        textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                      }}
+                    >
+                      <Typography variant="h4" className='carousel-item-heading'>{banner.title}</Typography>
+                    </Box>
+                  </Box>
+                </SwiperSlide>
+              )
+            })}
+          </Swiper>
+        )}
       </Box>
 
       <Box sx={{ display: 'flex', backgroundColor: "primary.bgColor", justifyContent: 'center', my: 5, py: 3 }}>
-        <Typography variant="h4" component="h2" fontWeight={'bold'}>
+        <Typography variant="h4" component="h2" fontWeight={'bold'} className="fade-left-right">
           New Arrivals
         </Typography>
       </Box>

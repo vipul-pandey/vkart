@@ -242,6 +242,13 @@ const Header = () => {
                 </MenuItem>
                 <MenuItem
                   component={Link}
+                  to="/admin/banners"
+                  onClick={handleAdminMenuClose}
+                >
+                  Banners
+                </MenuItem>
+                <MenuItem
+                  component={Link}
                   to="/admin/orders"
                   onClick={handleAdminMenuClose}
                 >
