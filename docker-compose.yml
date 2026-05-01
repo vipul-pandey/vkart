@@ -1,0 +1,75 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    volumes:
+      - mongo-data:/data/db
+
+  user-service:
+    build:
+      context: ./backend/services/user-service
+    container_name: user-service
+    expose:
+      - "5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+    depends_on:
+      - mongo
+
+  product-service:
+    build:
+      context: ./backend/services/product-service
+    container_name: product-service
+    expose:
+      - "5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+    depends_on:
+      - mongo
+
+  order-service:
+    build:
+      context: ./backend/services/order-service
+    container_name: order-service
+    expose:
+      - "5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+    depends_on:
+      - mongo
+
+  payment-service:
+    build:
+      context: ./backend/services/payment-service
+    container_name: payment-service
+    expose:
+      - "5000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - mongo
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+      - payment-service
+
+volumes:
+  mongo-data:
