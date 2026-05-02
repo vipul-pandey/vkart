@@ -1,0 +1,89 @@
+/* ============================================
+   SearchBox Component Styles
+   ============================================ */
+
+.searchbox-form {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* TextField / Input Container */
+.searchbox-input .MuiOutlinedInput-root {
+  background-color: rgba(255, 255, 255, 0.95);
+  transition: all 300ms ease-in-out;
+  border-radius: 24px;
+  padding-right: 0;
+}
+
+.searchbox-input .MuiOutlinedInput-root:hover {
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+  transform: translateY(-2px);
+}
+
+.searchbox-input .MuiOutlinedInput-root.Mui-focused {
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.25);
+  transform: translateY(-4px);
+}
+
+.searchbox-input .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #667eea !important;
+}
+
+.searchbox-input .MuiOutlinedInput-root fieldset {
+  border-color: rgba(102, 126, 234, 0.3);
+  transition: all 300ms ease-in-out;
+}
+
+/* Input Text */
+.searchbox-input .MuiOutlinedInput-input {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+}
+
+.searchbox-input .MuiOutlinedInput-input::placeholder {
+  color: #999999;
+  opacity: 1;
+}
+
+/* Search Button */
+.searchbox-button {
+  border-radius: 0 24px 24px 0;
+  color: #667eea !important;
+  transition: all 300ms ease-in-out;
+}
+
+.searchbox-button:hover {
+  background-color: rgba(102, 126, 234, 0.1);
+  color: #764ba2 !important;
+}
+
+.searchbox-button:active {
+  transform: scale(0.95);
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 900px) {
+  .searchbox-form {
+    max-width: 100%;
+  }
+}
+
+/* ============================================
+   Animation Keyframes
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -24,10 +24,11 @@ import {
   AccountCircle,
 } from '@mui/icons-material';
 
-import logo from '../assets/vkart-logo.png';
+import logo from '../assets/vkart-modern-logo.svg';
 import SearchBox from './SearchBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
+import './Header.css';
 const _ = require('lodash');
 
 const Header = () => {
@@ -77,92 +78,78 @@ const Header = () => {
     setAnchorEl(null);
   };
   const [searchOpen, setSearchOpen] = useState(false);
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box className="header-container">
+      {/* Mobile Search Overlay */}
       {searchOpen && (
         <Box
-          sx={{
-            position: 'fixed',
-            top: { xs: 56, sm: 64 },
-            left: 0,
-            width: '100vw',
-            height: `calc(100vh - 56px)`,
-            // For sm and up, adjust height for taller AppBar
-            '@media (min-width:600px)': {
-              height: 'calc(100vh - 64px)',
-            },
-            zIndex: 2000,
-            display: { xs: 'flex', md: 'none' },
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            pointerEvents: 'auto',
-            background: 'transparent',
-          }}
+          className="header-search-overlay"
           onClick={() => setSearchOpen(false)}
         >
           <Box
-            sx={{
-              width: '94%',
-              maxWidth: 500,
-              bgcolor: 'background.paper',
-              borderRadius: 2,
-              boxShadow: 3,
-              mt: 2,
-              p: 1.5,
-            }}
+            className="header-search-modal"
             onClick={e => e.stopPropagation()}
           >
             <SearchBox />
           </Box>
         </Box>
       )}
-      <AppBar position="fixed">
+
+      {/* Header AppBar */}
+      <AppBar position="fixed" className="header-appbar">
         <Container maxWidth="xl">
-          <Toolbar sx={{ minHeight: { xs: 56, sm: 64, padding: 0 } }}>
+          <Toolbar className="header-toolbar">
             {/* Left: Hamburger and Logo */}
-            <Box sx={{ display: 'flex', alignItems: 'center', flexzz: { xs: '1 1 auto', md: '0 1 auto' } }}>
+            <Box className="header-logo-section">
               <IconButton
                 edge="start"
-                color="inherit"
+                className="header-hamburger"
                 onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
-                sx={{ mr: { xs: 0, md: 2 } }}
               >
                 <MenuIcon />
               </IconButton>
               <Box
                 component={Link}
                 to="/"
-                sx={{ display: 'flex', alignItems: 'center' }}
+                className="header-logo-link"
                 onClick={() => setSearchOpen(false)}
               >
-                <img src={logo} width='100px' alt="logo" />
+                <img src={logo} alt="VKART Logo" className="header-logo-img" />
               </Box>
             </Box>
 
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'end' }}>
+            {/* Center: Search */}
+            <Box className="header-search-section">
               <IconButton
-                color="inherit"
-                sx={{ display: { xs: 'flex', md: 'none' } }}
+                className="header-search-mobile-btn"
                 onClick={() => setSearchOpen(true)}
                 aria-label="open search"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99a1 1 0 0 0 1.41-1.41l-4.99-5zm-6 0C8.01 14 6 11.99 6 9.5S8.01 5 10.5 5 15 7.01 15 9.5 12.99 14 10.5 14z" fill="currentColor" /></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99a1 1 0 0 0 1.41-1.41l-4.99-5zm-6 0C8.01 14 6 11.99 6 9.5S8.01 5 10.5 5 15 7.01 15 9.5 12.99 14 10.5 14z" fill="white" />
+                </svg>
               </IconButton>
-              <Box sx={{ display: { xs: 'none', md: 'flex' }, width: '100%', maxWidth: 400 }}>
+              <Box className="header-search-desktop">
                 <SearchBox />
               </Box>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flex: { xs: '1 1 auto', md: '0 1 auto' } }}>
+            {/* Right: Cart and User */}
+            <Box className="header-right-section">
               <IconButton
                 component={Link}
                 to="/cart"
-                color="inherit"
-                sx={{ mr: 1 }}
+                className="header-cart-btn"
               >
                 <Badge
                   badgeContent={cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
                   color="error"
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      animation: 'pulse 2s ease-in-out infinite',
+                    },
+                  }}
                 >
                   <ShoppingCart />
                 </Badge>
@@ -174,14 +161,9 @@ const Header = () => {
                     color="inherit"
                     onClick={handleUserMenuOpen}
                     startIcon={<AccountCircle />}
-                    sx={{ minWidth: 0, px: 1 }}
+                    className="header-user-btn"
                   >
-                    <Box
-                      sx={{
-                        display: { xs: 'none', sm: 'inline' },
-                        textTransform: 'none',
-                      }}
-                    >
+                    <Box className="header-user-name">
                       {userInfo.name}
                     </Box>
                   </Button>
@@ -189,6 +171,7 @@ const Header = () => {
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={handleUserMenuClose}
+                    className="header-user-menu"
                   >
                     <MenuItem
                       component={Link}
@@ -216,7 +199,12 @@ const Header = () => {
                   </Menu>
                 </>
               ) : (
-                <Button component={Link} to="/signin" color="inherit">
+                <Button
+                  component={Link}
+                  to="/signin"
+                  color="inherit"
+                  className="header-signin-btn"
+                >
                   Sign In
                 </Button>
               )}
@@ -225,6 +213,7 @@ const Header = () => {
                 open={Boolean(adminAnchorEl)}
                 onClose={handleAdminMenuClose}
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                className="header-admin-menu"
               >
                 <MenuItem
                   component={Link}
@@ -267,24 +256,25 @@ const Header = () => {
         </Container>
       </AppBar>
 
+      {/* Sidebar Drawer */}
       <Drawer
         anchor="left"
         open={sidebarIsOpen}
         onClose={() => setSidebarIsOpen(false)}
-        sx={{ '& .MuiDrawer-paper': { width: 240 } }}
+        className="header-drawer"
       >
-        <Box sx={{ p: 2 }}>
-          <Typography variant="h6" gutterBottom>
+        <Box className="header-categories-box">
+          <Typography variant="h6" className="header-categories-title">
             Categories
           </Typography>
-          <List>
-            {categories.map((category) => (
+          <List className="header-categories-list">
+            {categories.map((category, index) => (
               <ListItem
                 key={category}
                 component={Link}
                 to={`/search?category=${category}`}
                 onClick={() => setSidebarIsOpen(false)}
-                sx={{ cursor: 'pointer' }}
+                className="header-category-item"
               >
                 <ListItemText primary={_.startCase(category)} />
               </ListItem>

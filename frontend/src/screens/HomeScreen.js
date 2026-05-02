@@ -70,10 +70,10 @@ const HomeScreen = () => {
   return (
     <Box>
       <Helmet>
-        <title>Vkart</title>
+        <title>Vkart - Modern Ecommerce</title>
       </Helmet>
 
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ mb: 4, animation: 'fadeIn 0.5s ease-in-out' }}>
         {bannersLoading ? (
           <LoadingBox />
         ) : bannersError ? (
@@ -94,23 +94,49 @@ const HomeScreen = () => {
               const imgSrc = banner.image || (banner.images && banner.images[0]);
               return (
                 <SwiperSlide key={banner._id || index} style={{ width: '30rem' }}>
-                  <Box sx={{ position: 'relative', width: '30rem', height: '30rem' }}>
+                  <Box 
+                    sx={{ 
+                      position: 'relative', 
+                      width: '30rem', 
+                      height: '30rem',
+                      animation: 'fadeIn 0.5s ease-in-out',
+                    }}
+                  >
                     <img
                       src={imgSrc}
                       alt={banner.title}
-                      style={{ width: '100%', height: '100%' }}
+                      style={{ 
+                        width: '100%', 
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 300ms ease-in-out',
+                      }}
                     />
-                    <Box borderRadius='0 15px' sx={{
-                      position: 'absolute',
-                      top: 10,
-                      left: 10,
-                      color: banner.label?.color || 'white',
-                      background:
-                        'linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7))',
-                      textShadow: '2px 2px 4px rgba(231, 9, 9, 0.5)',
-                    }}
-                      className="blink-animation">
-                      <Typography variant="h7" sx={{ p: 2, fontWeight: 'bold' }}>{banner.label?.text}</Typography>
+                    <Box 
+                      borderRadius='0 15px' 
+                      sx={{
+                        position: 'absolute',
+                        top: 10,
+                        left: 10,
+                        color: banner.label?.color || 'white',
+                        background:
+                          'linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8))',
+                        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
+                        borderRadius: '8px',
+                        animation: 'slideInLeft 0.5s ease-in-out',
+                      }}
+                      className="blink-animation"
+                    >
+                      <Typography 
+                        variant="h7" 
+                        sx={{ 
+                          p: 2, 
+                          fontWeight: 'bold',
+                          transition: 'all 300ms ease-in-out',
+                        }}
+                      >
+                        {banner.label?.text}
+                      </Typography>
                     </Box>
                     <Box
                       sx={{
@@ -118,9 +144,20 @@ const HomeScreen = () => {
                         bottom: 20,
                         width: '100%',
                         textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                        animation: 'slideInUp 0.5s ease-in-out 0.2s forwards',
+                        opacity: 0,
                       }}
                     >
-                      <Typography variant="h4" className='carousel-item-heading'>{banner.title}</Typography>
+                      <Typography 
+                        variant="h4" 
+                        className='carousel-item-heading'
+                        sx={{
+                          color: 'white',
+                          textShadow: '3px 3px 6px rgba(0,0,0,0.5)',
+                        }}
+                      >
+                        {banner.title}
+                      </Typography>
                     </Box>
                   </Box>
                 </SwiperSlide>
@@ -130,21 +167,52 @@ const HomeScreen = () => {
         )}
       </Box>
 
-      <Box sx={{ display: 'flex', backgroundColor: "primary.bgColor", justifyContent: 'center', my: 5, py: 3 }}>
-        <Typography variant="h4" component="h2" fontWeight={'bold'} className="fade-left-right">
-          New Arrivals
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          justifyContent: 'center', 
+          my: 5, 
+          py: 3,
+          borderRadius: '12px',
+          boxShadow: 'var(--shadow-lg)',
+          animation: 'fadeInUp 0.6s ease-in-out',
+        }}
+      >
+        <Typography 
+          variant="h4" 
+          component="h2" 
+          sx={{
+            fontWeight: 'bold',
+            color: 'white',
+            animation: 'float 3s ease-in-out infinite',
+          }}
+        >
+          ✨ New Arrivals ✨
         </Typography>
       </Box>
 
-      <Box>
+      <Box sx={{ animation: 'fadeInUp 0.6s ease-in-out 0.1s forwards', opacity: 0 }}>
         {loading ? (
           <LoadingBox />
         ) : error ? (
           <MessageBox variant="danger">{error}</MessageBox>
         ) : (
           <Grid container spacing={3}>
-            {products.map((product) => (
-              <Grid item key={product.slug} xs={12} sm={6} md={4} lg={3}>
+            {products.map((product, index) => (
+              <Grid 
+                item 
+                key={product.slug} 
+                xs={12} 
+                sm={6} 
+                md={4} 
+                lg={3}
+                sx={{
+                  animation: 'staggerFadeIn 0.5s ease-in-out forwards',
+                  animationDelay: `${index * 0.08}s`,
+                  opacity: 0,
+                }}
+              >
                 <Product product={product} />
               </Grid>
             ))}
