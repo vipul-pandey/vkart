@@ -5,10 +5,44 @@ import { isAuth, isAdmin } from '../utils.js';
 
 const productRouter = express.Router();
 
-productRouter.get('/', async (req, res) => {
-  const products = await Product.find();
-  res.send(products);
-});
+productRouter.get('/', expressAsyncHandler(async (req, res) => {
+  try {
+    const pageSize = parseInt(req.query.pageSize) || 12;
+    const page = parseInt(req.query.page) || 1;
+    const category = req.query.category;
+    const searchQuery = req.query.query;
+    const sortBy = req.query.sortBy || '-createdAt';
+
+    let filter = {};
+    if (category && category !== 'all') {
+      filter.category = category;
+    }
+    if (searchQuery) {
+      filter.$or = [
+        { name: { $regex: searchQuery, $options: 'i' } },
+        { description: { $regex: searchQuery, $options: 'i' } },
+      ];
+    }
+
+    const countProducts = await Product.countDocuments(filter);
+
+    const products = await Product.find(filter)
+      .select('name slug price image category brand rating numReviews countInStock')
+      .sort(sortBy)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
+      .lean();
+
+    res.status(200).json({
+      products,
+      countProducts,
+      page,
+      pages: Math.ceil(countProducts / pageSize),
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}));
 
 productRouter.post(
   '/',

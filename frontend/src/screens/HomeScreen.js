@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useState, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
   Grid,
@@ -15,42 +15,101 @@ import axios from '../api/axiosInstance';
 import Product from '../components/Product';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import ProductSkeleton from '../components/ProductSkeleton';
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
       return { ...state, loading: true };
     case 'FETCH_SUCCESS':
-      return { ...state, products: action.payload, loading: false };
+      return { ...state, products: action.payload || [], loading: false };
+    case 'FETCH_MORE_REQUEST':
+      return { ...state, loadingMore: true };
+    case 'FETCH_MORE_SUCCESS':
+      // Append new products to existing list
+      return {
+        ...state,
+        products: [...state.products, ...action.payload],
+        loadingMore: false
+      };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
+    case 'FETCH_MORE_FAIL':
+      return { ...state, loadingMore: false };
     default:
       return state;
   }
 };
 
 const HomeScreen = () => {
-  const [{ loading, error, products }, dispatch] = useReducer(reducer, {
+  const [{ loading, error, products, loadingMore }, dispatch] = useReducer(reducer, {
     products: [],
     loading: true,
     error: '',
+    loadingMore: false,
   });
   const [banners, setBanners] = useState([]);
   const [bannersLoading, setBannersLoading] = useState(true);
   const [bannersError, setBannersError] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const observerTarget = useRef(null);
 
+  // Fetch initial products
   useEffect(() => {
     const fetchData = async () => {
       dispatch({ type: 'FETCH_REQUEST' });
       try {
-        const result = await axios.get('/api/products');
-        dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
+        const result = await axios.get('/api/products?page=1&pageSize=12');
+        const productsData = result.data?.products || result.data || [];
+        setCurrentPage(1);
+        setTotalPages(result.data?.pages || 1);
+        dispatch({ type: 'FETCH_SUCCESS', payload: Array.isArray(productsData) ? productsData : [] });
       } catch (err) {
         dispatch({ type: 'FETCH_FAIL', payload: err.message });
       }
     };
     fetchData();
   }, []);
+
+  // Fetch more products (next page)
+  const fetchMoreProducts = useCallback(async () => {
+    if (currentPage >= totalPages || loadingMore) return; // Already at last page or loading
+
+    dispatch({ type: 'FETCH_MORE_REQUEST' });
+    try {
+      const nextPage = currentPage + 1;
+      const result = await axios.get(`/api/products?page=${nextPage}&pageSize=12`);
+      const productsData = result.data?.products || [];
+      setCurrentPage(nextPage);
+      dispatch({ type: 'FETCH_MORE_SUCCESS', payload: Array.isArray(productsData) ? productsData : [] });
+    } catch (err) {
+      console.error('Error fetching more products:', err);
+      dispatch({ type: 'FETCH_MORE_FAIL' });
+    }
+  }, [currentPage, totalPages, loadingMore]);
+
+  // Setup Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loadingMore && currentPage < totalPages) {
+          fetchMoreProducts();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [currentPage, totalPages, loadingMore, fetchMoreProducts]);
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -94,10 +153,10 @@ const HomeScreen = () => {
               const imgSrc = banner.image || (banner.images && banner.images[0]);
               return (
                 <SwiperSlide key={banner._id || index} style={{ width: '30rem' }}>
-                  <Box 
-                    sx={{ 
-                      position: 'relative', 
-                      width: '30rem', 
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '30rem',
                       height: '30rem',
                       animation: 'fadeIn 0.5s ease-in-out',
                     }}
@@ -105,15 +164,15 @@ const HomeScreen = () => {
                     <img
                       src={imgSrc}
                       alt={banner.title}
-                      style={{ 
-                        width: '100%', 
+                      style={{
+                        width: '100%',
                         height: '100%',
                         objectFit: 'cover',
                         transition: 'transform 300ms ease-in-out',
                       }}
                     />
-                    <Box 
-                      borderRadius='0 15px' 
+                    <Box
+                      borderRadius='0 15px'
                       sx={{
                         position: 'absolute',
                         top: 10,
@@ -127,10 +186,10 @@ const HomeScreen = () => {
                       }}
                       className="blink-animation"
                     >
-                      <Typography 
-                        variant="h7" 
-                        sx={{ 
-                          p: 2, 
+                      <Typography
+                        variant="h7"
+                        sx={{
+                          p: 2,
                           fontWeight: 'bold',
                           transition: 'all 300ms ease-in-out',
                         }}
@@ -148,8 +207,8 @@ const HomeScreen = () => {
                         opacity: 0,
                       }}
                     >
-                      <Typography 
-                        variant="h4" 
+                      <Typography
+                        variant="h4"
                         className='carousel-item-heading'
                         sx={{
                           color: 'white',
@@ -167,21 +226,21 @@ const HomeScreen = () => {
         )}
       </Box>
 
-      <Box 
-        sx={{ 
-          display: 'flex', 
+      <Box
+        sx={{
+          display: 'flex',
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          justifyContent: 'center', 
-          my: 5, 
+          justifyContent: 'center',
+          my: 5,
           py: 3,
           borderRadius: '12px',
           boxShadow: 'var(--shadow-lg)',
           animation: 'fadeInUp 0.6s ease-in-out',
         }}
       >
-        <Typography 
-          variant="h4" 
-          component="h2" 
+        <Typography
+          variant="h4"
+          component="h2"
           sx={{
             fontWeight: 'bold',
             color: 'white',
@@ -198,25 +257,40 @@ const HomeScreen = () => {
         ) : error ? (
           <MessageBox variant="danger">{error}</MessageBox>
         ) : (
-          <Grid container spacing={3}>
-            {products.map((product, index) => (
-              <Grid 
-                item 
-                key={product.slug} 
-                xs={12} 
-                sm={6} 
-                md={4} 
-                lg={3}
-                sx={{
-                  animation: 'staggerFadeIn 0.5s ease-in-out forwards',
-                  animationDelay: `${index * 0.08}s`,
-                  opacity: 0,
-                }}
-              >
-                <Product product={product} />
-              </Grid>
-            ))}
-          </Grid>
+          <>
+            <Grid container spacing={3}>
+              {products.map((product, index) => (
+                <Grid
+                  item
+                  key={product.slug}
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  sx={{
+                    animation: 'staggerFadeIn 0.5s ease-in-out forwards',
+                    animationDelay: `${index * 0.08}s`,
+                    opacity: 0,
+                  }}
+                >
+                  <Product product={product} />
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Infinite scroll trigger */}
+            <Box ref={observerTarget} sx={{ py: 4 }}>
+              {loadingMore && (
+                <Grid container spacing={3}>
+                  {[...Array(12)].map((_, i) => (
+                    <Grid key={i} item xs={12} sm={6} md={4} lg={3}>
+                      <ProductSkeleton />
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
+            </Box>
+          </>
         )}
       </Box>
     </Box>
