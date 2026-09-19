@@ -65,6 +65,7 @@ userRouter.post(
     if (user) {
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
         expiresIn: '3h',
+        algorithm: 'HS256',
       });
       user.resetToken = token;
       await user.save();
@@ -99,7 +100,7 @@ userRouter.post(
 userRouter.post(
   '/reset-password',
   expressAsyncHandler(async (req, res) => {
-    jwt.verify(req.body.token, process.env.JWT_SECRET, async (err, decode) => {
+    jwt.verify(req.body.token, process.env.JWT_SECRET, { algorithms: ['HS256'] }, async (err, decode) => {
       if (err) {
         res.status(401).send({ message: 'Invalid Token' });
       } else {

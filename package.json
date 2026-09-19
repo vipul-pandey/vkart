@@ -10,7 +10,7 @@
   "scripts": {
     "install:all": "npm install && npm install --workspace=frontend && npm install --workspace=backend",
     "dev:frontend": "npm run start --workspace=frontend",
-    "dev:backend": "npm run start --workspace=backend",
+    "dev:backend": "npm run dev --workspace=backend",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "build": "npm run build --workspace=frontend",
     "start": "npm run start --workspace=backend",

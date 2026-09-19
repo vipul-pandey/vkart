@@ -2,9 +2,13 @@ import express from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
+import expressAsyncHandler from 'express-async-handler';
 import { isAdmin, isAuth } from '../utils.js';
 
-const upload = multer();
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 10, parts: 11 },
+});
 
 const uploadRouter = express.Router();
 
@@ -13,7 +17,10 @@ uploadRouter.post(
   isAuth,
   isAdmin,
   upload.single('file'),
-  async (req, res) => {
+  expressAsyncHandler(async (req, res) => {
+    if (!req.file) {
+      return res.status(400).send({ message: 'A file is required' });
+    }
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
@@ -33,6 +40,12 @@ uploadRouter.post(
     };
     const result = await streamUpload(req);
     res.send(result);
-  }
+  })
 );
+uploadRouter.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    return res.status(err.code === 'LIMIT_FILE_SIZE' ? 413 : 400).send({ message: err.message });
+  }
+  next(err);
+});
 export default uploadRouter;

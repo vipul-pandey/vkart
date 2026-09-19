@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import mg from 'mailgun-js';
+import Mailgun from 'mailgun.js';
 
 export const baseUrl = () =>
   process.env.BASE_URL
@@ -19,6 +19,7 @@ export const generateToken = (user) => {
     process.env.JWT_SECRET,
     {
       expiresIn: '30d',
+      algorithm: 'HS256',
     }
   );
 };
@@ -27,7 +28,7 @@ export const isAuth = (req, res, next) => {
   const authorization = req.headers.authorization;
   if (authorization) {
     const token = authorization.slice(7, authorization.length); // Bearer XXXXXX
-    jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
+    jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] }, (err, decode) => {
       if (err) {
         res.status(401).send({ message: 'Invalid Token' });
       } else {
@@ -48,11 +49,31 @@ export const isAdmin = (req, res, next) => {
   }
 };
 
-export const mailgun = () =>
-  mg({
-    apiKey: process.env.MAILGUN_API_KEY,
-    domain: process.env.MAILGUN_DOMIAN,
+// Preserve the existing messages().send(data, callback) call sites while using
+// the maintained SDK. Keep the legacy misspelled variable for deployed configs.
+export const mailgun = () => {
+  const domain = process.env.MAILGUN_DOMAIN || process.env.MAILGUN_DOMIAN;
+  const client = new Mailgun(FormData).client({
+    username: 'api',
+    key: process.env.MAILGUN_API_KEY,
+    useFetch: true,
+    ...(process.env.MAILGUN_API_URL ? { url: process.env.MAILGUN_API_URL } : {}),
   });
+  return {
+    messages: () => ({
+      send: (data, callback) => {
+        const request = client.messages.create(domain, data);
+        if (callback) {
+          return request.then(
+            (result) => callback(null, result),
+            (error) => callback(error)
+          );
+        }
+        return request;
+      },
+    }),
+  };
+};
 
 export const payOrderEmailTemplate = (order) => {
   return `<h1>Thanks for shopping with us</h1>
