@@ -1,8 +1,12 @@
 import axios from "axios";
 
+const baseURL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5500"
+    : "/api";
+
 const instance = axios.create({
-  baseURL: "http://13.204.82.250"
-  // baseURL: 'https://vkart-ry24.onrender.com'
+  baseURL,
 });
 
 export default instance;
