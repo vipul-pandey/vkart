@@ -1,0 +1,73 @@
+name: Deploy Vkart frontend
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "frontend/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/deploy-frontend.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vkart-frontend-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::559947224926:role/vkart-github-deploy
+          aws-region: ap-south-1
+
+      - name: Upload build to S3
+        run: |
+          aws s3 sync frontend/build \
+            s3://vkart-frontend-559947224926-ap-south-1 \
+            --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id EOOXN4FNCYO3J \
+            --paths "/*"
+
+      - name: Verify frontend and API
+        run: |
+          curl --fail --silent --show-error --retry 5 \
+            https://d1qyez6bzh3y3t.cloudfront.net/ \
+            -o /tmp/vkart-index.html
+
+          grep -q '<div id="root"></div>' /tmp/vkart-index.html
+
+          curl --fail --silent --show-error --retry 5 \
+            https://d1qyez6bzh3y3t.cloudfront.net/api/products
